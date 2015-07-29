@@ -129,7 +129,7 @@ values:
 
 <a name="db" href="#db">#</a> **`ripple.db`**`('type://user:password@host:port/database')`
 
-connects ripple to something else, synchronishing any changes. `type` must exist in `ripple.adaptors`
+connects ripple to something else, synchronishing any changes. `type` must exist in `ripple.db.adaptors`
 
 <a name="adaptors" href="#adaptors">#</a> **`ripple.adaptors`**
 
@@ -137,7 +137,7 @@ array of services ripple knows how to connect to. mysql only by default.
 
 each new adaptor must be a function that takes the destructured connection string `{ type, user, password, host, port, database }` and returns an object with four crud functions `{ push, update, remove, load }` - these functions will be called when the corresponding event occurs.
 
-<a name="connections" href="#connections">#</a> **`ripple.connections`**
+<a name="connections" href="#connections">#</a> **`ripple.db.connections`**
 
 array of active connections to other services
 
