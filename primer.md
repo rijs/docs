@@ -56,9 +56,11 @@ Guide to building applications with Ripple
 
 `2.4 -----` **Write data-driven components**
 
-`2.4.0 ---` Data-drive both variable and structural parts of your component with [utilise/once](https://github.com/utilise/utilise#--once)
+`2.4.0 ---` Ripple is agnostic to and does not at all care about the implementation inside a component
 
-`2.4.1 ---` You can use templating, but this is an anti-pattern `<custom-element template="custom.jade">`
+`2.4.1 ---` Consider though data-driving both variable and structural parts of your component with [utilise/once](https://github.com/utilise/utilise#--once)
+
+`2.4.2 ---` You can use templating, but this is an anti-pattern `<custom-element template="custom.jade">`
 
 #### 3 Application
 
