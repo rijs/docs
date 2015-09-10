@@ -6,6 +6,7 @@
 * [x] Live Reload during Development 
 * [ ] Time Travel Debugging and Replay
 * [ ] Microservices - Circuit Breakers and Caching
+* [ ] Push Notifications on Mobile
 * [ ] Service Workers - Background Sync and Push
 * [ ] Expose REST API of Resoures as Middleware
 * [ ] Redis Caching Module
