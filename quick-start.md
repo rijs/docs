@@ -32,7 +32,7 @@ app.get('/', function(req, res){
 doctype
 html
   body
-    twitter-feed(data='tweets', ripple)
+    twitter-feed(data='tweets')
 ```
 
 ##### Run the app
