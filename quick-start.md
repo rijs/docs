@@ -3,14 +3,14 @@
 ##### Installation
 
 ```
-npm install @pemrouz/ripple
+npm install rijs
 ```
 
 ##### index.js
 ```js
 var app    = require('express')()
   , server = require('http').createServer(app)
-  , ripple = require('ripple')(server)
+  , ripple = require('rijs')(server)
 
 ripple
   .resource('tweets', ['lorem', 'ipsum'])
