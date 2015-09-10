@@ -31,6 +31,8 @@ app.get('/', function(req, res){
 ```jade
 doctype
 html
+  head
+    script(src='/ripple.min.js')
   body
     twitter-feed(data='tweets')
 ```
