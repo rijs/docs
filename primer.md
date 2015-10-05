@@ -137,6 +137,8 @@ The styles from the resource `twitter-feed.css` will inserted once in a `<style>
 
 You can write your styles as if all your views have [Shadow DOM encapsulation](https://github.com/rijs/shadow). For browsers that cannot create a Shadow DOM, or if you choose not to use that module in your rendering pipeline, the styles will be [translated and scoped](https://github.com/rijs/precss) to the same effect.
 
+Ripple in itself does not care how you structure your components internally, with innerHTML, jQuery, D3, Templates, React, Virtual DOM, etc - however see [this guide](https://github.com/rijs/docs/blob/master/components.md) for more background and guidance on component architecture.
+
 <br>
 <br>
 ## 4 Application
