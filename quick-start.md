@@ -3,19 +3,18 @@
 ##### Installation
 
 ```
-npm install @pemrouz/ripple
+npm install rijs
 ```
 
 ##### index.js
 ```js
 var app    = require('express')()
   , server = require('http').createServer(app)
-  , ripple = require('ripple')(server)
+  , ripple = require('rijs')(server)
 
 ripple
   .resource('tweets', ['lorem', 'ipsum'])
   .resource('twitter-feed', function(d){
-    this.style.color = 'green'
     this.innerHTML = '<li>' + d.join('</li><li>') + '</li>'
   })
 
@@ -31,8 +30,10 @@ app.get('/', function(req, res){
 ```jade
 doctype
 html
+  head
+    script(src='/ripple.min.js')
   body
-    twitter-feed(data='tweets', ripple)
+    twitter-feed(data='tweets')
 ```
 
 ##### Run the app
