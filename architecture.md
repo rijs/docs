@@ -1,5 +1,7 @@
 # Architecture
 
+![image](https://raw.githubusercontent.com/rijs/docs/master/architecture.png)
+
 Ripple is a reactive, resource-oriented, standards embracing, progressively enhancing, isomorphic, productive, functional, modular, realtime application architecture. The philosophy is that _all_ changes ripple across the network to all other connected servers, clients and databases synchronising them in realtime where possible.
 
 It is built as a pipeline of independent modules, to abstract the plumbing of using modules directly in your application code, and at the same time future-proofing by not being locked into yet another framework. It starts off with a trivial, but extensible, [core](https://github.com/rijs/core) module. This is essentially an event emitter with one event (change). Every module takes the existing ripple instance and layers new behaviours and affordances.
@@ -7,6 +9,8 @@ It is built as a pipeline of independent modules, to abstract the plumbing of us
 All modules live under the [rijs](https://github.com/rijs/) org. This document explains the particular set of modules connected together to make the [pemrouz/ripple](https://github.com/pemrouz/ripple/blob/master/src/index.js#L28-L45) nervous system (which is what I use in side projects), but you will likely change some modules to build your own pipeline to suit your development patterns or specific application (e.g. Popper uses only a [connection of three modules on test agents](https://github.com/pemrouz/popper/blob/master/client.js#L1-L4) since the agents could be very old browsers). For more info on any module, click to drill down into its own repo.
 
 For learning how to build applications with Ripple, see the [Primer]() instead.
+
+## Index of Modules
 
 * [**Sync**](https://github.com/rijs/sync): When a resource changes on the client, it is emitted back to the server. When a resource changes on the server it is broadcast to all clients. Hooks provided for private resources (or transforming them in general) before broadcast/receive.
 
@@ -50,8 +54,6 @@ For learning how to build applications with Ripple, see the [Primer]() instead.
 
 * [**Server Side Rendering**:](https://github.com/rijs/ssr) This registers a middleware on your server to expand any Custom Elements using the same components logic and available resources at the time before sending the page to the client.
 
-* [**Resources Directory**:](https://github.com/rijs/resdir) On startup, this will load resources in your `/resources` directory so you do not have to require and register each file manually.
-
-* [**Live Reload**:](https://github.com/rijs/live) During development, this will watch for any changes in your resources folder and reregister it on change. So if you change a component implementation, or a component CSS, it will automatically be reflected in the client without any refreshes.
+* [**Resources Directory**:](https://github.com/rijs/resdir) On startup, this will load resources in your `/resources` directory so you do not have to require and register each file manually. During development, this will watch for any changes in your resources folder and reregister it on change. So if you change a component implementation, or a component CSS, it will automatically be reflected in the client without any refreshes.
 
 * [**Virtual DOM**:](https://github.com/rijs/virtual) This does not acutally exist, but I just added it as an example of how trivial it would be to tack a module on the end of your rendering pipeline that captured the component output, diffed it, then applied the changes. Note that I have no need or intention of actually building this because I think HTML churn can be mostly solved by writing idempotent components with micro-libraries like [once](https://github.com/utilise/utilise#--once).
