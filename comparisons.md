@@ -25,19 +25,3 @@ Ripple and Polymer both embrace Web Components for composing applications, but b
 ### Ripple vs Redux
 
 The Ripple core is comparable to but lighter than Redux, whilst achieving the same design goals in a more modular and efficient manner (developer experience, hot reloading, time travel, universal apps, record and replay). Despite Redux trying to eliminate boilerplate in concepts from orthodox React/Flux, it is still strongly entrenched with some legacy concepts and a particular way of doing things (reducers, action creators, etc). The basic Ripple API allows the user to choose more options (e.g. immutability) and opt-in to modules.
-
-```js
-// create
-let store = createStore(counter);
-ripple('counter', number)
-
-// subscribe to updates
-store.subscribe(() =>
-  console.log(store.getState())
-)
-ripple('counter').on('change', d => console.log(d))
-
-// update
-store.dispatch({ type: 'INCREMENT' });
-number++
-```
