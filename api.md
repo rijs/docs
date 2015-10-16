@@ -8,11 +8,12 @@
 
 default global ripple instance
 
-<a name="require" href="#require">#</a> **`require('ripple')`**`(opts | server)`
+<a name="require" href="#require">#</a> **`require('rijs')`**`(opts | server)`
 
 both parameters optional. `server` is the `http.Server` instance (express app) to connect to clients on. if object (`opts`) is passed in, it can have the following:
 
 * `server` — as above
+* `db` — [see below](https://github.com/rijs/docs/blob/master/api.md#db)
 * `secret` — [secret used to sign session ID cookie](https://github.com/expressjs/session#secret)
 * `name` — [name of the session ID cookie](https://github.com/expressjs/session#name)
 
@@ -127,9 +128,9 @@ values:
 
 #### Database
 
-<a name="db" href="#db">#</a> **`ripple.db`**`('type://user:password@host:port/database')`
+<a name="db" href="#db">#</a> **`require('rijs')`**`({ db: 'type://user:password@host:port/database' })`
 
-connects ripple to something else, synchronishing any changes. `type` must exist in `ripple.db.adaptors`
+connects ripple to something else, synchronishing any changes. `type` must exist in `ripple.adaptors`. can be array of connection strings.
 
 <a name="adaptors" href="#adaptors">#</a> **`ripple.adaptors`**
 
@@ -137,7 +138,7 @@ array of services ripple knows how to connect to. mysql only by default.
 
 each new adaptor must be a function that takes the destructured connection string `{ type, user, password, host, port, database }` and returns an object with four crud functions `{ push, update, remove, load }` - these functions will be called when the corresponding event occurs.
 
-<a name="connections" href="#connections">#</a> **`ripple.db.connections`**
+<a name="connections" href="#connections">#</a> **`ripple.connections`**
 
 array of active connections to other services
 

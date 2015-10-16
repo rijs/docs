@@ -169,13 +169,10 @@ When the server receives updates, this change will also be broadcast to any othe
 INSERT INTO tweets (text) VALUES ('Hello World!'');
 ```
 
-To pipe updates to other services, you just need to pass a connection string when you first configure Ripple:
+To pipe updates to other services, you just need to pass a connection string when you first configure Ripple (you can also pass an array of connection strings to connect to multiple external services):
 
 ```js
-ripple
-  .db('mysql://user:password@host:port/database')
-  .db(...)
-  .db(...)
+ripple = require('rijs')({ db: 'mysql://user:password@host:port/database' })
 ```
 
 The [DB module](https://github.com/rijs/db) simply deconstructs the connection string and passes it as an object to the adaptor specified by the protocol (`proto://..`). That module should then initialise the connection and return four CRUD functions which will be invoked whenver the respective changes happen. In this way, you could write your own adaptor for a wide range of services.

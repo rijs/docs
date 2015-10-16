@@ -191,43 +191,7 @@ I took these sections out of the main article, but thought they may be of intere
 
 ## React
  
-The Facebook team, similarly working on a large JS projects, discovered similar declarative principles and can be largely credited with bringing this idea from the fringe to the mainstream. However, their own particular implementation has a few issues.
- 
-* React can be slow [[1](https://github.com/reddit/reddit-mobile/issues/247#issuecomment-118407042)] [[2](https://aerotwist.com/blog/react-plus-performance-equals-what/)] [[3](https://github.com/atom/atom/pull/5624)]
- 
-* React is primarily focused on performance optimisation (giving less attention to other considerations). Virtual DOM overlaps with D3 Joins - they both selectively apply operations. However, virtual DOM diffs two sets of markups, and applies the changes. D3 Joins gives you three architecturally useful selections (enter/update/exit) upon which you can selectively apply operations, or create further semantic subselections from. Appending and removing elements is 99.99% of the DOM churn. The return on diffing markup for other reasons (e.g. attributes) is less beneficial. And if there was, you could solve this with a simple memoize function or browser update rather than a new framework that takes over your entire view layer.
- 
-* React favours inheritance over composition. The same OOP problems apply: the fragile base class, deep hierarchies, cross-cutting concerns. Consider rendering a list of numbers, with two renderers, one for even numbers and one for odd numbers. You could not later orthogonally enhance a different subsection of the total numbers generated (e.g. prime). D3 reliably enables extension of existing components via functional composition.
- 
-```js
-numbers.filter(isEven)
-       .each(makeRed)
- 
-numbers.filter(isOdd)
-       .each(makeGreen)
- 
-numbers.filter(isPrime)
-       .each(makeBold)      
-```
-
-Or, in markup:
-
-```html
-<even-number is="prime">
-<odd-number is="prime">
-```
-
-There's no concept of layering or progressively enhancing a view with behaviour in React and you would end up with a class for each possible permutation.
-
-* React is a heavy abstraction. React fanboys are quick to point out that "everything is an abstraction", but that's not my point here. React does not attempt to embrace any standards, even when it can (Web Components). It provides you some hooks, then if you need anything beyond that, you short-circuit the framework losing any benefits. Consider for example the hook "shouldComponentUpdate" which bails out of rendering some components. This can be achieved with a defensive `if (x) return` statement at the top of your component function, or even more semantically in D3:
- 
-```js
-rows.filter(isNormal).each(normal)
-rows.filter(isCritical).each(critical)
-rows.filter(isWarning).each(warning)
-```
-
-* React is a framework, essentially an in-memory representation of your entire application. It calls your code, rather than you calling React. This risks lock-in. React components are not loosely decoupled or interoperable. Writing a component as a transformation function is much simpler and interoperable with different frameworks/contexts than writing another framework-specific component.
+The Facebook team, similarly working on a large JS projects, some similar UI ideals and can be largely credited with bringing this idea from the fringe to the mainstream. However, whereas React takes over your entire view layer, the components espoused here are independent, loosely decoupled and framework agnostic. React is 40kB minified and gzipped. Where React is strongly OOP, the components here are the functional equivalent and can be compared to just being the render function, or [the new simpler stateless functional syntax](http://facebook.github.io/react/blog/2015/10/07/react-v0.14.html#stateless-functional-components). 99% of the DOM churn is avoided with D3 Joins, and the Virtual DOM diffing aspect can be bolted onto the end of your rendering pipeline in Ripple as a module extension. JSX only makes it less painful to generate HTML markup in JS, but once/D3 gives you three architecturally useful selections (enter/update/exit) upon which you can selectively apply operations, or create further semantic subselections from. It also does this without requiring any compilation.
 
 ## Virtual DOM
  
