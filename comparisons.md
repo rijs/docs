@@ -25,3 +25,11 @@ Ripple and Polymer both embrace Web Components for composing applications, but b
 ### Ripple vs Redux
 
 The Ripple core is comparable to but lighter than Redux, whilst achieving the same design goals in a more modular and efficient manner (developer experience, hot reloading, time travel, universal apps, record and replay). Despite Redux trying to eliminate boilerplate in concepts from orthodox React/Flux, it is still strongly entrenched with some legacy concepts and a particular way of doing things (reducers, action creators, etc). The basic Ripple API allows the user to choose more options (e.g. immutability) and opt-in to modules.
+
+### Ripple vs loadCSS
+
+The Ripple architecture results in the same behaviour as loadCSS offers. CSS modules (in fact all resources) are loaded asynchronously (streamed) and appended in order to preserve cascading. If you are using Shadow DOM, they will be added at the start of the shadow root and to the head of the document if not (see [PreCSS](https://github.com/rijs/precss) for more info). In addition (i) only the modules you are currently using will be appended (ii) this is not something you need to manually manage at all but is inferred from a declarative syntax.
+
+### [Ripple vs React](https://github.com/rijs/docs/blob/master/components.md#react)
+
+### [Ripple vs Virtual DOM](https://github.com/rijs/docs/blob/master/components.md#virtual-dom)
