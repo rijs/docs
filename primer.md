@@ -189,19 +189,21 @@ There are two proxy functions (`from` and `to`) which you can define in the head
 ripple('tweets', [], { from, to })
 ```
 
-#### **`to`**
+#### **`to (res { name, body, headers }, change { key, value, type })`**
 
 Whenever a resource is sent from the server **to** a client, it will be passed through this first.
 
-`this` is the socket being sent to, first argument is the current resource body to transform. This function is used to send a different representation to a client, if at all. 
+`this` is the socket being sent to, the first argument is the resource and the the second argument is change info. This function is used to send a different representation to a client, if at all. 
 
-For example, returning `false` will not send the resource at all, useful for privatising some resources:
+Returning `false` will not send the resource at all, useful for privatising some resources:
 
 ```js
 tweets => false
 ```
 
-The following will collapse and just send the total number of tweets. Whenever there is a change to the `tweets` resource, a push will still be triggered to broadcast to all clients so they are still always up to date, but instead of transferring an array of all tweets, they will just get the total count representation now:
+Returning `true` will just continue with streaming the `change`. If you return anything else, it will stream that representation of the resource instead.
+
+For example, the following will collapse and just send the total number of tweets. Whenever there is a change to the `tweets` resource, a push will still be triggered to broadcast to all clients so they are still always up to date, but instead of transferring an array of all tweets, they will just get the total count representation now:
 
 ```js
 tweets => tweets.length
@@ -213,21 +215,15 @@ You can vary representations based on authentication. Each socket has a `session
 tweets => users[this.sessionID] ? tweets : tweets.filter(limit)
 ```
 
-#### **`from`**
+#### **`from (res { name, body, headers }, change { key, value, type })`**
 
-Whenever a resource is received **from** the client it will be passed through this first
+Whenever a resource is received **from** the client it will be passed through this first.
 
-`this` is the socket you are receiving the resource from. The arguments are:
+`this` is the socket being sent to, the first argument is the resource and the the second argument is change info. This function is used to process a change before Ripple commits it in-memory and broadcasts it to other clients. Only one of the arguments, either the complete resource (i.e. state of the world) or the change info, will be set.
 
-* `item` - item in object or array that was changed
-* `body` - the full collection (resource body)
-* `index` - where the item appears in the body (key/index)
-* `type` - type of change that happened to the item in the body (`push`/`update`/`remove`)
-* `name` - the name of the resource being changed
+Returning `true` will continue with registering the resource or applying the change diff.
 
-This function is used to process a change from a client before Ripple commits it in-memory and broadcasts it to other clients.
-
-Returning false will ignore all changes from the client for a resource:
+Returning `false` will ignore all changes from the client for that resource:
 
 ```js
 (..) => false
@@ -248,7 +244,7 @@ You could choose to ignore whatever change the user made, and take another actio
 If a user successfully logins, you could force a refresh of _all_ resources for that user since they may now have access to more resources:
 
 ```js
-({ username, password }) => login(username, password).then(ripple.sync(this))` 
+(..) => login(username, password).then(ripple.stream(this))` 
 ```
 
 These declarative transformation functions have a very high power-to-weight ratio and the above examples are just a few illustrative examples.
@@ -256,7 +252,7 @@ These declarative transformation functions have a very high power-to-weight rati
 The imperative API for sending all or some resources, to all or some clients is:
 
 ```js
-ripple.sync(sockets)(resources)
+ripple.stream(sockets)(resources)
 ```
 
 The first parameter (`sockets`) could be one socket, an array of sockets, a `sessionID` string identifying a socket, or nothing which would imply all connected sockets. The second parameter (`resources`) could be the name of a resource to send, or nothing which would imply sending all resources.
@@ -271,28 +267,20 @@ There is only one event: `change`. Emitterification is achieved using [utilise/e
 * You can namespace events - there is only one listener for each namespaced event.
 * You can force listener updates using `.emit('change')`. 
 
-In general, the [reactive module](https://github.com/rijs/reactive) means you never have to manually emit changes. Instead of writing:
+Using the [functional operators](https://github.com/utilise/utilise#--set), you do not have to manually emit changes. Instead of writing:
 
 ```js
 ripple('tweets').push('Hi')
-ripple('tweets').emit('change')
+ripple('tweets').emit('change', { key, value, type })
 ```
 
 You can just write:
 
 ```js
-ripple('tweets').push('Hi')
+push('Hi')(ripple('tweets'))
 ```
 
-Which will implicitly call the `.emit('change')`. This is basically achieved via `Object.observe` for upto two-levels or dirty checking in browsers that don't support that:
-
-```js
-Object.observe(resource, c => resource.emit('change'))
-```
-
-You can opt-out of this module and manually invoke `emit` after making a change. The only other time you may need this is if you wish to immediately (i.e. synchronously) flush any changes and notify other observers.
-
-The idea is that your data are your first-class citizens, and the focus is on writing declarative business logic rather than the plumbing required to update views, other clients, services, etc. Having the `emit` triggered as an epiphenomenon of a data change operation rather than an explicit command is another step in this direction.
+Which will implicitly call the `.emit` with the correct change information. In addition, if you're resource is [versioned](https://github.com/pemrouz/versioned) it will update it's log.
 
 <br>
 <br>
@@ -314,7 +302,7 @@ ripple('twitter-feed.css', file('./twitter-feed.css'))
 
 We can take this even further:
 
-For convenience, all JS and CSS files under `/resources` will be auto imported on startup by the [resdir module](https://github.com/rijs/resdir) (ignoring any files with `test`). Once loaded into server, they will be streamed to clients. This means at no point do you actually have to manually register any resources.
+For convenience, all JS and CSS files under `/resources` will be auto imported on startup by the [resdir module](https://github.com/rijs/resdir) (ignoring any files with `test` or prefixed with `_`). Once loaded into server, they will be streamed to clients. This means at no point do you actually have to manually register any resources.
 
 Components will registered under the name matching their filename (without `.js`). You can write these files as follows:
 

@@ -116,7 +116,7 @@ Examples:
 
 the underlying socket.io instance
 
-<a name="sync" href="#sync">#</a> **`ripple.sync(sockets)(resources)`**
+<a name="stream" href="#stream">#</a> **`ripple.stream(sockets)(resources)`**
 
 emit all or some resources, to all or some clients. 
 
@@ -186,17 +186,17 @@ specify which database table/collection to populate the resource with and sync c
 
 Example: `ripple('users', [], { 'table': 'members' })`
 
-<a name="to" href="#to">#</a> `[header]`**`proxy-to | to`**
+<a name="to" href="#to">#</a> `[header]`**`to`**
 
 function applied to body before being sent to clients 
 
 Example: `ripple('users', [], { to: reduceToNumber })`
 
-<a name="from" href="#from">#</a> `[header]`**`proxy-from | from`**
+<a name="from" href="#from">#</a> `[header]`**`from`**
 
 function applied to changes received from client 
 
-Example: `ripple('read-only-data', [], { from: ignoreChages })`
+Example: `ripple('read-only-data', [], { from: ignoreChanges })`
 
 <a name="listeners" href="#listeners">#</a> `[header]`**`listeners`**
 
