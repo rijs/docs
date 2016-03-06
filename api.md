@@ -49,15 +49,15 @@ import resources from another ripple node
 
 alias for ripple as above that allows method chaining for registering multiple resources
 
-<a name="on" href="#on">#</a> **`ripple.on`**`('change', function)`
+<a name="on" href="#on">#</a> **`ripple.on`**`('change', function(name, change))`
 
-react to all changes 
+react to all changes
 
-<a name="on" href="#on">#</a> **`ripple('name').on`**`('change', function)`
+<a name="on" href="#on">#</a> **`ripple('name').on`**`('change', function(change))`
 
-react to changes on the named resource
+react to changes on the named resource (function receives `name` and `change` object, if any)
 
-<a name="once" href="#once">#</a> **`ripple('name').once`**`('change', function)`
+<a name="once" href="#once">#</a> **`ripple('name').once`**`('change', function(change))`
 
 react once to a change on the named resource
 

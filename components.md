@@ -1,5 +1,7 @@
 # Guide to Writing Components
  
+_See [pemrouz/vanilla](https://github.com/pemrouz/vanilla#vanilla) for the latest spec_
+
 Ripple is itself completely agnostic to how you structure your components. In most examples, you will see `.innerHTML =` for brevity. However, given the importance of the issue this article aims to bring together all the best practices and presents a practical developer guide to writing components that achieves a range of goals:
 
 * Framework Agnostic (Widely Reusable)
@@ -80,7 +82,7 @@ In less trivial examples, it has a composable and terse lispy syntax:
 once(node)                        // limit to this node
   ('div', { results: [1, 2, 3] }) // creates one div (with the specified datum)
     ('li', key('results'))        // creates three li (with datum 1, 2, 3 respectively)
-      ('a', inherit)              // creates anchor in each li (with parent datum)
+      ('a', 1)                    // creates anchor in each li (inherits parent datum)
         .text(String)             // sets the text in anchor to the datum
 ```
 

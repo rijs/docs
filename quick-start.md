@@ -10,7 +10,7 @@ npm install rijs
 ```js
 var app    = require('express')()
   , server = require('http').createServer(app)
-  , ripple = require('rijs')(server)
+  , ripple = require('rijs').default(server)
 
 ripple
   .resource('tweets', ['lorem', 'ipsum'])
@@ -44,13 +44,13 @@ node index.js
 
 ##### Reactive Data
 
-Now open `localhost:4000` in two tabs and then try doing `ripple('tweets').push('new tweet!')` to add new data. 
+Now open `localhost:4000` in two tabs and then try doing `push('new tweet!')(ripple('tweets'))` to add new data. 
 
 ![reactive-data](https://cloud.githubusercontent.com/assets/2184177/4209638/ce377c08-386b-11e4-9e80-362d888842ca.gif)
 
 ##### Reactive Component (hot code push)
 
-Or you could try changing the implementation of the renderer by switching `green` to `red`, and watch the component update without a refresh:
+Or you could [try changing the implementation](https://github.com/rijs/examples/tree/master/minimal-vanilla) of the renderer by switching `green` to `red`, and watch the component update without a refresh:
 
 ![reactive-component](https://cloud.githubusercontent.com/assets/2184177/4209637/ce3396c4-386b-11e4-9c69-7be232382463.gif)
 
