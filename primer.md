@@ -28,7 +28,7 @@ On the server:
 ripple = require('rijs')(server)
 ```
 
-The HTTP(S) server instance is primarily used to synchronise with clients in realtime. If you don't specify one, you can create a server-only node which doesn't connect to any clients. There are also some [other options](https://github.com/rijs/docs/blob/master/api.md#require) you can specify.
+The HTTP(S) server instance is primarily used to synchronise with clients in realtime. If you don't specify one, you can create a server-only node which doesn't connect to any clients. There are also some [other options](https://github.com/pemrouz/ripple#api) you can specify.
 
 On the client: 
 
@@ -36,7 +36,7 @@ On the client:
 <script src='/ripple.min.js'></script>
 ```
 
-The [client endpoints](https://github.com/rijs/docs/blob/master/distributions.md) are exposed on the same server instance for ease of use. This is done by the [serve module](https://github.com/rijs/serve), so if you want to serve the client yourself, you can just comment this module out of your Ripple pipeline.
+The [client endpoints](https://github.com/pemrouz/ripple#distributions) are exposed on the same server instance for ease of use. This is done by the [serve module](https://github.com/rijs/serve), so if you want to serve the client yourself, you can just comment this module out of your Ripple build.
 
 <br>
 <br>
@@ -64,10 +64,10 @@ ripple('key').once('change', function(r){ .. })
 To subscribe to all updates globally:
 
 ```js
-ripple.on('change', function(r){ .. })
+ripple.on('change', function(name){ .. })
 ```
 
-The idea is to keep it simple! All [other modules](https://github.com/rijs/docs/blob/master/architecture.md) build on this simple API, by reactively taking action when something changes.
+The idea is to keep it simple! All [other modules](https://github.com/pemrouz/ripple#index-of-modules) build on this simple API, by reactively taking action when something changes.
 
 <br>
 <br>
@@ -100,7 +100,7 @@ Each microview may depend on zero, one or many data resources:
 If an element depends on any data, the value of these data resources will be dependency injected into the transformation function:
 
 ```js
-ripple('twitter-feed', function(tweets){
+ripple('twitter-feed', function({ tweets }){
   this.innerHTML  = 'Hello World! You have ' + tweets.length + ' tweets'
 })
 ```
@@ -131,9 +131,9 @@ Each microview may have its own styles:
 <twitter-feed css="twitter-feed.css">
 ```
 
-This allows you to write cohesive styles for each component, but decoupled enough to also allow skinning your component with different sets of styles. 
+This allows you to write cohesive styles for each component, but decoupled enough to also allow skinning your component with a different theme. 
 
-The styles from the resource `twitter-feed.css` will inserted once in a `<style>` tag at the start of your component root, and will be automatically updated if those styles change. 
+The styles from the resource `twitter-feed.css` will be inserted once in a `<style>` tag at the start of your component root, and will be automatically updated if those styles change. 
 
 You can write your styles as if all your views have [Shadow DOM encapsulation](https://github.com/rijs/shadow). For browsers that cannot create a Shadow DOM, or if you choose not to use that module in your rendering pipeline, the styles will be [translated and scoped](https://github.com/rijs/precss) to the same effect.
 
@@ -158,7 +158,7 @@ The philosophy here is to maximise optimistic rendering for better perceived per
 When your application makes any changes, this will be synchornised with the server, then synchronised with any other clients:
 
 ```js
-ripple('tweets').push({ text: 'Hello World!' })
+push({ text: 'Hello World!' })(ripple('tweets'))
 ```
 
 This is what makes Ripple an extension of Flux. Not only is the current page up to date, but all other clients will be kept up to date in realtime too. Everything is "pushed" rather than "pulled".
@@ -181,7 +181,7 @@ The [DB module](https://github.com/rijs/db) simply deconstructs the connection s
 <br>
 ## 5 Sync
 
-Ripple uses per-resource declarative transformation functions to define the flow of data between server-client. This enables "realtime REST" or "REST over WS". All changes flow through these functions which may return a different representation. The concept is analogous to, but more generic than, "request-response" in HTTP. In request-response, you have to make a request to get a response. If you decouple this, consider that you could receive a response without a request, or make a request with multiple responses, or make a request that does not have a response.
+Ripple uses declarative transformation functions to define the flow of data between server-client. This enables "realtime REST" or "REST over WS". All changes flow through these functions which may return a different representation. The concept is analogous to, but more generic than, "request-response" in HTTP. In request-response, you have to make a request to get a response. If you decouple this, consider that you could receive a response without a request, or make a request with multiple responses, or make a request that does not have a response.
 
 There are two proxy functions (`from` and `to`) which you can define in the headers section:
 
@@ -271,7 +271,7 @@ Using the [functional operators](https://github.com/utilise/utilise#--set), you 
 
 ```js
 ripple('tweets').push('Hi')
-ripple('tweets').emit('change', { key, value, type })
+ripple('tweets').emit('change', { key, value, type, time })
 ```
 
 You can just write:
@@ -280,7 +280,7 @@ You can just write:
 push('Hi')(ripple('tweets'))
 ```
 
-Which will implicitly call the `.emit` with the correct change information. In addition, if you're resource is [versioned](https://github.com/pemrouz/versioned) it will update it's log.
+Which will implicitly call the `.emit` with the correct change information. In addition, if you're resource has a `.log` of versions it will push the update on to that. The reason for mutations producing tuples of `{ key, value, type, time }` (i.e. a standardised atomic fact) is because this builds an immutable log of changes that can be easily replicated to other nodes or used for more efficient rendering.
 
 <br>
 <br>
@@ -304,7 +304,7 @@ We can take this even further:
 
 For convenience, all JS and CSS files under `/resources` will be auto imported on startup by the [resdir module](https://github.com/rijs/resdir) (ignoring any files with `test` or prefixed with `_`). Once loaded into server, they will be streamed to clients. This means at no point do you actually have to manually register any resources.
 
-Components will registered under the name matching their filename (without `.js`). You can write these files as follows:
+Components will be registered under the name matching their filename (without `.js`). You can write these files as follows:
 
 ```js
 // resources/twitter-feed.js
@@ -387,7 +387,7 @@ On the client, if there is anything in the light DOM it is switched over to the 
 <br>
 ## 10 Compatibility
 
-[Officially, Ripple v0.3 supports the latest version of each browsers](https://travis-ci.org/rijs/). However, most modules run on any platform. This is the idea behind publicising compatibility of different modules with popper to allow users to knowingly opt-in and out of features to suit their requirements. The only module that does not work on older browsers is the [components module](https://github.com/rijs/components). The Web Component affordances (attached, detached, attribute changed callbacks) are currently polyfilled by `MutationObservers`. This could be solved in a more generic way like the [reactive module](https://github.com/rijs/reactive) does with `Object.observe`. However, it might be better to just slightly adjust your development pattern. Whenever you update a Custom Element, just remember to subsequently invoke a `ripple.draw` on that node. This is the same as if you weren't using the reactive module and you manually had to invoke `.emit('change')` after making a change.
+[Officially, Ripple supports IE9+ and the latest version of each browsers](https://travis-ci.org/rijs/). However, most modules run on any platform. This is the idea behind publicising compatibility of different modules with popper to allow users to knowingly opt-in and out of features to suit their requirements.
 
 ![image](https://cloud.githubusercontent.com/assets/2184177/8728132/6a211df0-2bdb-11e5-8295-cb2e9f836203.png)
 _Snapshot of Test Results for Ripple v0.3 on latest Chrome, Firefox, IE, Android and iOS_
